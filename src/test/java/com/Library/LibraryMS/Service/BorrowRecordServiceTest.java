@@ -2,6 +2,7 @@ package com.Library.LibraryMS.Service;
 
 import com.Library.LibraryMS.models.Book;
 import com.Library.LibraryMS.models.BorrowRecord;
+import com.Library.LibraryMS.models.LogInInfo;
 import com.Library.LibraryMS.models.Patron;
 import com.Library.LibraryMS.repos.BookRepo;
 import com.Library.LibraryMS.repos.BorrowRecordRepo;
@@ -38,6 +39,7 @@ public class BorrowRecordServiceTest {
     Book book=new Book();
     Patron patron=new Patron();
     BorrowRecord borrowRecord=new BorrowRecord();
+    LogInInfo logInInfo=new LogInInfo();
     @BeforeEach
     public void setValues(){
         book.setBookId(2L);
@@ -54,6 +56,8 @@ public class BorrowRecordServiceTest {
         borrowRecord.setPatron(patron);
         borrowRecord.setBorrowDate(LocalDate.now());
         borrowRecord.setDueDate(LocalDate.now().plusDays(7));
+       logInInfo.setEmail("thecret@gmail.com");
+       logInInfo.setPhone(123456789L);
     }
 
     @Test
@@ -63,13 +67,13 @@ public class BorrowRecordServiceTest {
         Mockito.when(bookRepo.findById(book.getBookId())).thenReturn(Optional.of(book));
         Mockito.when(patronRepo.findById(patron.getPatronId())).thenReturn(Optional.of(patron));
         Mockito.when(borrowRecordRepo.save(Mockito.any(BorrowRecord.class))).thenReturn(borrowRecord);
-        BorrowRecord result=borrowRecordService.borrowBook(book.getBookId(), patron.getPatronId());
+        BorrowRecord result=borrowRecordService.borrowBook(book.getBookId(), patron.getPatronId(), logInInfo);
         Assert.assertNotNull(result);
         Assert.assertEquals("the secret",result.getBook().getTitle());
     }
     @Test
     @DisplayName("return book throws an exception when inserting null values")
     public void returnBookNullValues() {
-        Assert.assertThrows(Exception.class,()->{borrowRecordService.editRecord(null,null);});
+        Assert.assertThrows(Exception.class,()->{borrowRecordService.editRecord(null,null,null);});
     }
 }
